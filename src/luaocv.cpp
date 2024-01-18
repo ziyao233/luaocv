@@ -6,12 +6,13 @@
  */
 
 #include<lua.hpp>
-
 #include"functions.hpp"
+#include"core.hpp"
 
 extern "C" int
 luaopen_luaocv(lua_State *l)
 {
+	locv_core_init(l);
 	luaL_newlib(l, luaocvFunctions);
 	return 1;
 }

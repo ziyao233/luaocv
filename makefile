@@ -15,7 +15,7 @@ CXXLD		?= $(CROSS_COMPILE)g++
 CXXFLAGS	?= $(DYN_FLAGS) $(LUA_CXXFLAGS) $(CV_CXXFLAGS)
 LDFLAGS		?= $(DYN_FLAGS) $(LUA_LDFLAGS) $(CV_LDFLAGS)
 
-SRCS		:= src/luaocv.cpp
+SRCS		:= src/luaocv.cpp src/core.cpp src/helper.cpp
 OBJS		:= $(patsubst %.cpp, %.o, $(SRCS))
 
 LIB		:= luaocv.so

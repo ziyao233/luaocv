@@ -10,7 +10,10 @@
 
 #include<lua.hpp>
 
+#include"core.hpp"
+
 luaL_Reg luaocvFunctions[] = {
+	{ "Mat", locv_core_mat_new },
 	{ NULL, NULL },
 };
 
