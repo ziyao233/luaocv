@@ -14,6 +14,7 @@ luaopen_luaocv(lua_State *l)
 {
 	locv_core_init(l);
 	locv_imgcodecs_init(l);
+	locv_highgui_init(l);
 	luaL_newlib(l, luaocvFunctions);
 	return 1;
 }
