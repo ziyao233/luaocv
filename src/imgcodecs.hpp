@@ -11,6 +11,7 @@
 #include<lua.hpp>
 
 int locv_imgcodecs_imread(lua_State *l);
+int locv_imgcodecs_imwrite(lua_State *l);
 
 void locv_imgcodecs_init(lua_State *l);
 

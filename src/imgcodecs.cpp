@@ -41,6 +41,26 @@ locv_imgcodecs_imread(lua_State *l)
 	return 1;
 }
 
+/*	TODO: support codec parameters	*/
+int
+locv_imgcodecs_imwrite(lua_State *l)
+{
+	const char *path = luaL_checkstring(l, 1);
+	cv::Mat *mat = locv_core_mat_in_native(l, 2);
+
+	bool result = false;
+	try {
+		result = cv::imwrite(path, *mat);
+	} catch (const cv::Exception &e) {
+		lua_pushboolean(l, false);
+		lua_pushfstring(l, "Cannot save image as %s: %s", e.what());
+		return 2;
+	}
+
+	lua_pushboolean(l, true);
+	return 1;
+}
+
 void
 locv_imgcodecs_init(lua_State *l)
 {

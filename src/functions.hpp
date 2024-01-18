@@ -15,8 +15,14 @@
 #include"highgui.hpp"
 
 luaL_Reg luaocvFunctions[] = {
+	/*	Core		*/
 	{ "Mat", locv_core_mat_new },
+
+	/*	imgcodecs	*/
 	{ "imread", locv_imgcodecs_imread },
+	{ "imwrite", locv_imgcodecs_imwrite },
+
+	/*	highgui		*/
 	{ "imshow", locv_highgui_imshow },
 	{ "waitKey", locv_highgui_waitkey },
 	{ NULL, NULL },
