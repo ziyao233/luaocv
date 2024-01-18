@@ -11,9 +11,11 @@
 #include<lua.hpp>
 
 #include"core.hpp"
+#include"imgcodecs.hpp"
 
 luaL_Reg luaocvFunctions[] = {
 	{ "Mat", locv_core_mat_new },
+	{ "imread", locv_imgcodecs_imread },
 	{ NULL, NULL },
 };
 
