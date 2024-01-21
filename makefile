@@ -16,7 +16,7 @@ CXXFLAGS	?= $(DYN_FLAGS) $(LUA_CXXFLAGS) $(CV_CXXFLAGS)
 LDFLAGS		?= $(DYN_FLAGS) $(LUA_LDFLAGS) $(CV_LDFLAGS)
 
 SRCS		:= src/luaocv.cpp src/helper.cpp 		\
-	src/core.cpp src/imgcodecs.cpp src/highgui.cpp
+	src/core.cpp src/imgcodecs.cpp src/highgui.cpp src/videoio.cpp
 OBJS		:= $(patsubst %.cpp, %.o, $(SRCS))
 
 LIB		:= luaocv.so

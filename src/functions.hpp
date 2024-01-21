@@ -13,6 +13,7 @@
 #include"core.hpp"
 #include"imgcodecs.hpp"
 #include"highgui.hpp"
+#include"videoio.hpp"
 
 luaL_Reg luaocvFunctions[] = {
 	/*	Core		*/
@@ -25,6 +26,10 @@ luaL_Reg luaocvFunctions[] = {
 	/*	highgui		*/
 	{ "imshow", locv_highgui_imshow },
 	{ "waitKey", locv_highgui_waitkey },
+
+	/*	videoio		*/
+	{ "VideoCapture", locv_videoio_videocapture_new },
+
 	{ NULL, NULL },
 };
 
