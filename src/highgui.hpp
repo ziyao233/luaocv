@@ -9,7 +9,9 @@
 #define __HIGHGUI_HPP_INC__
 
 int locv_highgui_imshow(lua_State *l);
-int locv_highgui_waitkey(lua_State *l);
+int locv_highgui_wait_key(lua_State *l);
+int locv_highgui_poll_key(lua_State *l);
+int locv_highgui_set_window_title(lua_State *l);
 
 void locv_highgui_init(lua_State *l);
 

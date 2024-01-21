@@ -24,12 +24,27 @@ locv_highgui_imshow(lua_State *l)
 }
 
 int
-locv_highgui_waitkey(lua_State *l)
+locv_highgui_wait_key(lua_State *l)
 {
 	int delay = lua_tonumber(l, 1);
 	int key = cv::waitKey(delay);
 	lua_pushinteger(l, key);
 	return 1;
+}
+
+int
+locv_highgui_poll_key(lua_State *l)
+{
+	lua_pushinteger(l, cv::pollKey());
+	return 1;
+}
+
+int
+locv_highgui_set_window_title(lua_State *l)
+{
+	cv::setWindowTitle(luaL_checkstring(l, 1),
+			   luaL_checkstring(l, 2));
+	return 0;
 }
 
 void

@@ -25,7 +25,9 @@ luaL_Reg luaocvFunctions[] = {
 
 	/*	highgui		*/
 	{ "imshow", locv_highgui_imshow },
-	{ "waitKey", locv_highgui_waitkey },
+	{ "waitKey", locv_highgui_wait_key },
+	{ "pollKey", locv_highgui_poll_key },
+	{ "setWindowTitle", locv_highgui_set_window_title },
 
 	/*	videoio		*/
 	{ "VideoCapture", locv_videoio_videocapture_new },
