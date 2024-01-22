@@ -20,9 +20,13 @@ cv::Scalar locv_core_scalar_to_native(lua_State *l, int idx);
 void locv_core_point_to_lua(lua_State *l, cv::Point point);
 cv::Point locv_core_point_to_native(lua_State *l, int idx);
 
+void locv_core_size_to_lua(lua_State *l, cv::Size size);
+cv::Size locv_core_size_to_native(lua_State *l, int idx);
+
 int locv_core_mat_new(lua_State *l);
 int locv_core_scalar_new(lua_State *l);
 int locv_core_point_new(lua_State *l);
+int locv_core_size_new(lua_State *l);
 
 void locv_core_init(lua_State *l);
 

@@ -96,7 +96,7 @@ locv_core_scalar_new(lua_State *l)
 {
 	double *p = (double *)lua_newuserdatauv(l, sizeof(double) * 4, 0);
 	int i = 0;
-	for (; i < lua_gettop(l) - 1; i++)
+	for (; i < lua_gettop(l) - 1 && i < 4; i++)
 		p[i] = luaL_checknumber(l, i + 1);
 	for (; i < 4; i++)
 		p[i] = 0.;
@@ -151,7 +151,7 @@ locv_core_point_new(lua_State *l)
 {
 	int *p = (int *)lua_newuserdatauv(l, sizeof(int) * 2, 0);
 	int i = 0;
-	for (; i < lua_gettop(l) - 1; i++)
+	for (; i < lua_gettop(l) - 1 && i < 2; i++)
 		p[i] = luaL_checkinteger(l, i + 1);
 	for (; i < 2; i++)
 		p[i] = 0;
@@ -171,11 +171,62 @@ locv_core_point_init(lua_State *l)
 	return;
 }
 
+/*		locv.Size		*/
+
+cv::Size
+locv_core_size_to_native(lua_State *l, int idx)
+{
+	int *p = (int *)luaL_checkudata(l, idx, "locv.Size");
+	return cv::Size(p[0], p[1]);
+}
+
+void
+locv_core_size_to_lua(lua_State *l, cv::Size size)
+{
+	int *p = (int *)lua_newuserdatauv(l, sizeof(int) * 2, 0);
+	p[0] = size.width;
+	p[1] = size.height;
+	luaL_setmetatable(l, "locv.Size");
+	return;
+}
+
+static int
+locv_core_size_unpack(lua_State *l)
+{
+	int *p = (int *)luaL_checkudata(l, 1, "locv.Size");
+	lua_pushinteger(l, p[0]);
+	lua_pushinteger(l, p[1]);
+	return 2;
+}
+
+int
+locv_core_size_new(lua_State *l)
+{
+	int *p = (int *)lua_newuserdatauv(l, sizeof(int) * 2, 0);
+	p[0] = luaL_checkinteger(l, 1);
+	p[1] = luaL_checkinteger(l, 2);
+	luaL_setmetatable(l, "locv.Size");
+	return 1;
+}
+
+static const luaL_Reg locvCoreSizeMethods[] = {
+	{ "unpack", locv_core_size_unpack },
+	{ NULL, NULL },
+};
+
+static void
+locv_core_size_init(lua_State *l)
+{
+	locv_helper_new_class(l, "locv.Size", locvCoreSizeMethods, NULL);
+	return;
+}
+
 void
 locv_core_init(lua_State *l)
 {
 	locv_core_mat_init(l);
 	locv_core_scalar_init(l);
 	locv_core_point_init(l);
+	locv_core_size_init(l);
 	return;
 }
