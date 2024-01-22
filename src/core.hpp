@@ -14,7 +14,11 @@
 void locv_core_mat_in_lua(lua_State *l, cv::Mat *mat);
 cv::Mat *locv_core_mat_in_native(lua_State *l, int idx);
 
+void locv_core_scalar_to_lua(lua_State *l, cv::Scalar scalar);
+cv::Scalar locv_core_scalar_to_native(lua_State *l, int idx);
+
 int locv_core_mat_new(lua_State *l);
+int locv_core_scalar_new(lua_State *l);
 
 void locv_core_init(lua_State *l);
 

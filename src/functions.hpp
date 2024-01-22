@@ -18,6 +18,7 @@
 luaL_Reg luaocvFunctions[] = {
 	/*	Core		*/
 	{ "Mat", locv_core_mat_new },
+	{ "Scalar", locv_core_scalar_new },
 
 	/*	imgcodecs	*/
 	{ "imread", locv_imgcodecs_imread },
