@@ -74,7 +74,7 @@ locv_core_scalar_to_native(lua_State *l, int idx)
 }
 
 void
-locv_core_scalar_to_lua(lua_State *l, cv::Scalar &scalar)
+locv_core_scalar_to_lua(lua_State *l, const cv::Scalar &scalar)
 {
 	double *p = (double *)lua_newuserdatauv(l, sizeof(double) * 4, 0);
 	luaL_setmetatable(l, "locv.Scalar");
@@ -128,7 +128,7 @@ locv_core_point_to_native(lua_State *l, int idx)
 }
 
 void
-locv_core_point_to_lua(lua_State *l, cv::Point point)
+locv_core_point_to_lua(lua_State *l, const cv::Point &point)
 {
 	int *p = (int *)lua_newuserdatauv(l, sizeof(int) * 2, 0);
 	p[0] = point.x;
@@ -181,7 +181,7 @@ locv_core_size_to_native(lua_State *l, int idx)
 }
 
 void
-locv_core_size_to_lua(lua_State *l, cv::Size size)
+locv_core_size_to_lua(lua_State *l, const cv::Size &size)
 {
 	int *p = (int *)lua_newuserdatauv(l, sizeof(int) * 2, 0);
 	p[0] = size.width;
@@ -221,6 +221,83 @@ locv_core_size_init(lua_State *l)
 	return;
 }
 
+/*		locv.Rect		*/
+typedef struct {
+	int x, y;
+	int width, height;
+} Locv_Core_Rect;
+
+cv::Rect
+locv_core_rect_to_native(lua_State *l, int idx)
+{
+	Locv_Core_Rect *rect = (Locv_Core_Rect *)
+			luaL_checkudata(l, idx, "locv.Rect");
+	return cv::Rect(cv::Point(rect->x, rect->y),
+			cv::Size(rect->width, rect->height));
+}
+
+void
+locv_core_rect_to_lua(lua_State *l, const cv::Rect &rect)
+{
+	Locv_Core_Rect *r = (Locv_Core_Rect *)
+			lua_newuserdatauv(l, sizeof(Locv_Core_Rect), 0);
+	r->x		= rect.x;
+	r->y		= rect.y;
+	r->width	= rect.width;
+	r->height	= rect.height;
+	luaL_setmetatable(l, "locv.Rect");
+	return;
+}
+
+int
+locv_core_rect_new(lua_State *l)
+{
+	cv::Point point	= locv_core_point_to_native(l, 1);
+	cv::Size size	= locv_core_size_to_native(l, 2);
+
+	Locv_Core_Rect *rect = (Locv_Core_Rect *)
+			lua_newuserdatauv(l, sizeof(Locv_Core_Rect), 0);
+
+	rect->x		= point.x;
+	rect->y		= point.y;
+	rect->width	= size.width;
+	rect->height	= size.height;
+
+	luaL_setmetatable(l, "locv.Rect");
+
+	return 1;
+}
+
+int
+locv_core_rect_top_left(lua_State *l)
+{
+	Locv_Core_Rect *rect = (Locv_Core_Rect *)
+			luaL_checkudata(l, 1, "locv.Rect");
+	locv_core_point_to_lua(l, cv::Point(rect->x, rect->y));
+	return 1;
+}
+
+int
+locv_core_rect_size(lua_State *l)
+{
+	Locv_Core_Rect *rect = (Locv_Core_Rect *)
+			luaL_checkudata(l, 1, "locv.Rect");
+	locv_core_size_to_lua(l, cv::Size(rect->width, rect->height));
+	return 1;
+}
+
+static const luaL_Reg locvCoreRectMethods[] = {
+	{ "topLeft", locv_core_rect_top_left },
+	{ "size", locv_core_rect_size },
+	{ NULL, NULL },
+};
+
+static void
+locv_core_rect_init(lua_State *l)
+{
+	locv_helper_new_class(l, "locv.Rect", locvCoreRectMethods, NULL);
+}
+
 void
 locv_core_init(lua_State *l)
 {
@@ -228,5 +305,6 @@ locv_core_init(lua_State *l)
 	locv_core_scalar_init(l);
 	locv_core_point_init(l);
 	locv_core_size_init(l);
+	locv_core_rect_init(l);
 	return;
 }

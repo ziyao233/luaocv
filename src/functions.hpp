@@ -21,6 +21,7 @@ luaL_Reg luaocvFunctions[] = {
 	{ "Scalar", locv_core_scalar_new },
 	{ "Point", locv_core_point_new },
 	{ "Size", locv_core_size_new },
+	{ "Rect", locv_core_rect_new },
 
 	/*	imgcodecs	*/
 	{ "imread", locv_imgcodecs_imread },
