@@ -118,10 +118,64 @@ locv_core_scalar_init(lua_State *l)
 	return;
 }
 
+/*		locv.Point		*/
+
+cv::Point
+locv_core_point_to_native(lua_State *l, int idx)
+{
+	int *p = (int *)luaL_checkudata(l, idx, "locv.Point");
+	return cv::Point(p[0], p[1]);
+}
+
+void
+locv_core_point_to_lua(lua_State *l, cv::Point point)
+{
+	int *p = (int *)lua_newuserdatauv(l, sizeof(int) * 2, 0);
+	p[0] = point.x;
+	p[1] = point.y;
+	luaL_setmetatable(l, "locv.Point");
+	return;
+}
+
+static int
+locv_core_point_unpack(lua_State *l)
+{
+	int *p = (int *)luaL_checkudata(l, 1, "locv.Point");
+	lua_pushinteger(l, p[0]);
+	lua_pushinteger(l, p[1]);
+	return 2;
+}
+
+int
+locv_core_point_new(lua_State *l)
+{
+	int *p = (int *)lua_newuserdatauv(l, sizeof(int) * 2, 0);
+	int i = 0;
+	for (; i < lua_gettop(l) - 1; i++)
+		p[i] = luaL_checkinteger(l, i + 1);
+	for (; i < 2; i++)
+		p[i] = 0;
+	luaL_setmetatable(l, "locv.Point");
+	return 1;
+}
+
+static const luaL_Reg locvCorePointMethods[] = {
+	{ "unpack", locv_core_point_unpack },
+	{ NULL, NULL },
+};
+
+static void
+locv_core_point_init(lua_State *l)
+{
+	locv_helper_new_class(l, "locv.Point", locvCorePointMethods, NULL);
+	return;
+}
+
 void
 locv_core_init(lua_State *l)
 {
 	locv_core_mat_init(l);
 	locv_core_scalar_init(l);
+	locv_core_point_init(l);
 	return;
 }
