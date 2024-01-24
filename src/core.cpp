@@ -115,6 +115,10 @@ locv_core_mat_set(lua_State *l)
 		cv::Point p = locv_core_point_to_native(l, 2);
 		cv::Scalar s = locv_core_scalar_to_native(l, 3);
 		locv_core_mat_generic_set(mat, p, s);
+	} else if (luaL_testudata(l, 2, "locv.Rect")) {
+		cv::Rect r = locv_core_rect_to_native(l, 2);
+		cv::Scalar s = locv_core_scalar_to_native(l, 3);
+		mat->operator () (r) = s;
 	} else {
 		luaL_typeerror(l, 2, "locv.Point or locv.Rect");
 	}
@@ -167,6 +171,10 @@ locv_core_mat_get(lua_State *l)
 		cv::Point p = locv_core_point_to_native(l, 2);
 		cv::Scalar s = locv_core_mat_generic_get(mat, p);
 		locv_core_scalar_to_lua(l, s);
+	} else if (luaL_testudata(l, 2, "locv.Rect")) {
+		cv::Rect r = locv_core_rect_to_native(l, 2);
+		cv::Mat *part = new cv::Mat(*mat, r);
+		locv_core_mat_in_lua(l, part);
 	} else {
 		luaL_typeerror(l, 2, "locv.Point or locv.Rect");
 	}
