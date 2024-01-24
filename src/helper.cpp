@@ -5,6 +5,9 @@
  *	Copyright (c) 2024 Yao Zi. All rights reserved.
  */
 
+#include<cstdio>
+#include<cstdlib>
+
 #include<lua.hpp>
 
 void
@@ -23,5 +26,14 @@ locv_helper_new_class(lua_State *l, const char *name, const luaL_Reg *methods,
 	}
 
 	lua_pop(l, 1);
+	return;
+}
+
+void
+locv_helper_do_panic(const char *file, size_t line,
+		     const char *func, const char *msg)
+{
+	fprintf(stderr, "%s at %s %lu: %s", func, file, line, msg);
+	std::abort();
 	return;
 }

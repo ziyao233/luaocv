@@ -15,8 +15,24 @@
 #include"core.hpp"
 #include"helper.hpp"
 
-/*		locv.Mat		*/
+int
+locv_core_type_name_to_id(lua_State *l, int idx)
+{
+	const char *names[] = {
+		"8uc1", "8uc3", "8uc4", "64fc1", "64fc3", "64fc4",
+		"__error",
+	};
+	int types[] = {
+		CV_8UC1, CV_8UC3, CV_8UC4, CV_64FC1, CV_64FC3, CV_64FC4,
+	};
+	int id = luaL_checkoption(l, idx, "__error", names);
+	if (id == (sizeof(names) / sizeof(const char *) - 1))
+		luaL_argerror(l, idx, "not a valid OpenCV image type");
 
+	return types[id];
+}
+
+/*		locv.Mat		*/
 void
 locv_core_mat_in_lua(lua_State *l, cv::Mat *mat)
 {
@@ -44,15 +60,91 @@ locv_core_mat_gc(lua_State *l)
 	return 0;
 }
 
+static int
+locv_core_mat_clone(lua_State *l)
+{
+	cv::Mat *mat = (cv::Mat *)locv_core_mat_in_native(l, 1);
+	cv::Mat *newMat = new cv::Mat;
+	mat->copyTo(*newMat);
+	locv_core_mat_in_lua(l, newMat);
+	return 1;
+}
+
+static void
+locv_core_mat_generic_set(cv::Mat *mat, const cv::Point &p,
+			  const cv::Scalar &s)
+{
+	int ch = mat->channels();
+	const double *v = s.val;
+	switch (mat->depth()) {
+	case CV_8U:
+		switch (ch) {
+		case 1:
+			mat->at<uchar>(p) = v[0];
+			return;
+		case 3:
+			mat->at<cv::Vec3b>(p) = cv::Vec3b(v[0], v[1], v[2]);
+			return;
+		case 4:
+			mat->at<cv::Vec4b>(p) = cv::Vec4b(v[0], v[1],
+							  v[2], v[3]);
+			return;
+		}
+	case CV_64F:
+		case 3:
+			mat->at<cv::Vec3d>(p) = cv::Vec3d(v);
+			return;
+		case 4:
+			mat->at<cv::Vec4d>(p) = s;
+			return;
+	default:
+		locv_helper_panic("unsupported format");
+	}
+}
+
+static int
+locv_core_mat_set(lua_State *l)
+{
+	cv::Mat *mat = (cv::Mat *)locv_core_mat_in_native(l, 1);
+
+	void *p;
+	if (p = luaL_testudata(l, 2, "locv.Point")) {
+		cv::Point p = locv_core_point_to_native(l, 2);
+		cv::Scalar s = locv_core_scalar_to_native(l, 3);
+		locv_core_mat_generic_set(mat, p, s);
+	} else {
+		luaL_typeerror(l, 2, "locv.Point or locv.Rect");
+	}
+
+	lua_settop(l, 1);
+	return 1;
+}
+
 int
 locv_core_mat_new(lua_State *l)
 {
-	cv::Mat *mat = new cv::Mat;
+	int top = lua_gettop(l);
+	cv::Mat *mat;
+	if (top) {
+		int width	= luaL_checkinteger(l, 1);
+		int height	= luaL_checkinteger(l, 2);
+		int type 	= locv_core_type_name_to_id(l, 3);
+		cv::Scalar s;
+		if (top == 4)
+			s = locv_core_scalar_to_native(l, 4);
+		mat = new cv::Mat(width, height, type, s);
+	} else {
+		mat = new cv::Mat;
+	}
+
 	locv_core_mat_in_lua(l, mat);
+
 	return 1;
 }
 
 static luaL_Reg locvCoreMatMethods[] = {
+	{ "clone", locv_core_mat_clone },
+	{ "set", locv_core_mat_set },
 	{ NULL, NULL },
 };
 
