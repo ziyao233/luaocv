@@ -89,26 +89,32 @@ locv_core_mat_generic_set(cv::Mat *mat, const cv::Point &p,
 			mat->at<cv::Vec4b>(p) = cv::Vec4b(v[0], v[1],
 							  v[2], v[3]);
 			return;
+		default:
+			goto error;
 		}
 	case CV_64F:
+		switch (ch) {
 		case 3:
 			mat->at<cv::Vec3d>(p) = cv::Vec3d(v);
 			return;
 		case 4:
 			mat->at<cv::Vec4d>(p) = s;
 			return;
-	default:
-		locv_helper_panic("unsupported format");
+		default:
+			goto error;
+		}
 	}
+error:
+	locv_helper_panic("unsupported format");
 }
 
 static int
 locv_core_mat_set(lua_State *l)
 {
-	cv::Mat *mat = (cv::Mat *)locv_core_mat_in_native(l, 1);
+	cv::Mat *mat = locv_core_mat_in_native(l, 1);
 
 	void *p;
-	if (p = luaL_testudata(l, 2, "locv.Point")) {
+	if (luaL_testudata(l, 2, "locv.Point")) {
 		cv::Point p = locv_core_point_to_native(l, 2);
 		cv::Scalar s = locv_core_scalar_to_native(l, 3);
 		locv_core_mat_generic_set(mat, p, s);
@@ -117,6 +123,56 @@ locv_core_mat_set(lua_State *l)
 	}
 
 	lua_settop(l, 1);
+	return 1;
+}
+
+static cv::Scalar
+locv_core_mat_generic_get(cv::Mat *mat, cv::Point &p)
+{
+	int ch = mat->channels();
+
+	switch (mat->depth()) {
+	case CV_8U:
+		switch (ch) {
+		case 1:
+			return cv::Scalar(mat->at<uchar>(p));
+		case 3:
+			return cv::Scalar(mat->at<cv::Vec3b>(p));
+		case 4:
+			return cv::Scalar(mat->at<cv::Vec4b>(p));
+		default:
+			goto error;
+		}
+	case CV_64F:
+		switch (ch) {
+		case 1:
+			return cv::Scalar(mat->at<double>(p));
+		case 3:
+			return cv::Scalar(mat->at<cv::Vec3d>(p));
+		case 4:
+			return cv::Scalar(mat->at<cv::Vec4d>(p));
+		default:
+			goto error;
+		}
+	}
+error:
+	locv_helper_panic("unsupported format");
+	return cv::Scalar();
+}
+
+static int
+locv_core_mat_get(lua_State *l)
+{
+	cv::Mat *mat = locv_core_mat_in_native(l, 1);
+
+	void *p;
+	if (luaL_testudata(l, 2, "locv.Point")) {
+		cv::Point p = locv_core_point_to_native(l, 2);
+		cv::Scalar s = locv_core_mat_generic_get(mat, p);
+		locv_core_scalar_to_lua(l, s);
+	} else {
+		luaL_typeerror(l, 2, "locv.Point or locv.Rect");
+	}
 	return 1;
 }
 
@@ -145,6 +201,7 @@ locv_core_mat_new(lua_State *l)
 static luaL_Reg locvCoreMatMethods[] = {
 	{ "clone", locv_core_mat_clone },
 	{ "set", locv_core_mat_set },
+	{ "get", locv_core_mat_get },
 	{ NULL, NULL },
 };
 
