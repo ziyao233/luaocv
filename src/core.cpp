@@ -20,15 +20,12 @@ locv_core_type_name_to_id(lua_State *l, int idx)
 {
 	const char *names[] = {
 		"8uc1", "8uc3", "8uc4", "64fc1", "64fc3", "64fc4",
-		"__error",
+		NULL
 	};
 	int types[] = {
 		CV_8UC1, CV_8UC3, CV_8UC4, CV_64FC1, CV_64FC3, CV_64FC4,
 	};
-	int id = luaL_checkoption(l, idx, "__error", names);
-	if (id == (sizeof(names) / sizeof(const char *) - 1))
-		luaL_argerror(l, idx, "not a valid OpenCV image type");
-
+	int id = luaL_checkoption(l, idx, NULL, names);
 	return types[id];
 }
 

@@ -19,7 +19,8 @@ locv_imgcodecs_imread(lua_State *l)
 	const char *path = luaL_checkstring(l, 1);
 
 	const char *const list[] = {
-		"unchanged", "grayscale", "color", "anydepth", "anycolor"
+		"unchanged", "grayscale", "color", "anydepth", "anycolor",
+		NULL
 	};
 	enum cv::ImreadModes modes[] = {
 		cv::IMREAD_UNCHANGED, cv::IMREAD_GRAYSCALE, cv::IMREAD_COLOR,
