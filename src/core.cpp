@@ -29,6 +29,25 @@ locv_core_type_name_to_id(lua_State *l, int idx)
 	return types[id];
 }
 
+void
+locv_core_type_id_to_name(lua_State *l, int id)
+{
+	int ids[] = {
+		CV_8UC3, CV_8UC4, CV_8UC1, CV_64FC4, CV_64FC3, CV_64FC1,
+	};
+	const char *names[] = {
+		"8uc3", "8uc4", "8uc1", "64fc4", "64fc3", "64fc1",
+	};
+
+	for (int i = 0; i < sizeof(ids) / sizeof(int); i++) {
+		if (id == ids[i]) {
+			lua_pushstring(l, names[i]);
+			return;
+		}
+	}
+	locv_helper_panic("unsupported format");
+}
+
 /*		locv.Mat		*/
 void
 locv_core_mat_in_lua(lua_State *l, cv::Mat *mat)
@@ -181,6 +200,25 @@ locv_core_mat_get(lua_State *l)
 	return 1;
 }
 
+static int
+locv_core_mat_size(lua_State *l)
+{
+	cv::Mat *mat = locv_core_mat_in_native(l, 1);
+	locv_core_size_to_lua(l, cv::Size(mat->rows, mat->cols));
+	return 1;
+}
+
+static int
+locv_core_mat_format(lua_State *l)
+{
+	cv::Mat *mat = locv_core_mat_in_native(l, 1);
+	int dep = mat->depth();
+	lua_pushinteger(l, mat->channels());
+	lua_pushinteger(l, dep == CV_8U ? 8 : 64);
+	locv_core_type_id_to_name(l, mat->type());
+	return 3;
+}
+
 int
 locv_core_mat_new(lua_State *l)
 {
@@ -207,6 +245,8 @@ static luaL_Reg locvCoreMatMethods[] = {
 	{ "clone", locv_core_mat_clone },
 	{ "set", locv_core_mat_set },
 	{ "get", locv_core_mat_get },
+	{ "size", locv_core_mat_size },
+	{ "format", locv_core_mat_format },
 	{ NULL, NULL },
 };
 

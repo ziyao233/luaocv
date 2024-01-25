@@ -12,6 +12,7 @@
 #include<opencv2/core.hpp>
 
 int locv_core_type_name_to_id(lua_State *l, int idx);
+void locv_core_type_id_to_name(lua_State *l, int idx);
 
 void locv_core_mat_in_lua(lua_State *l, cv::Mat *mat);
 cv::Mat *locv_core_mat_in_native(lua_State *l, int idx);
