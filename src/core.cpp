@@ -204,7 +204,7 @@ static int
 locv_core_mat_size(lua_State *l)
 {
 	cv::Mat *mat = locv_core_mat_in_native(l, 1);
-	locv_core_size_to_lua(l, cv::Size(mat->rows, mat->cols));
+	locv_core_size_to_lua(l, cv::Size(mat->cols, mat->rows));
 	return 1;
 }
 
