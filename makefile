@@ -1,3 +1,10 @@
+ifeq ($(RELEASE),1)
+then
+	CXXFLAGS_DEBUG	= -O2
+else
+	CXXFLAGS_DEBUG	= -g
+endif
+
 LUA_PKGNAME	?= lua-5.4
 LUA_CXXFLAGS	?= $(shell pkg-config --cflags $(LUA_PKGNAME))
 LUA_LDFLAGS	?= $(shell pkg-config --libs $(LUA_PKGNAME))
@@ -12,11 +19,12 @@ CROSS_COMPILE	?=
 CXX		?= $(CROSS_COMPILE)g++
 CXXLD		?= $(CROSS_COMPILE)g++
 
-CXXFLAGS	?= $(DYN_FLAGS) $(LUA_CXXFLAGS) $(CV_CXXFLAGS)
+CXXFLAGS	?= $(DYN_FLAGS) $(LUA_CXXFLAGS) $(CV_CXXFLAGS) $(CXXFLAGS_DEBUG)
 LDFLAGS		?= $(DYN_FLAGS) $(LUA_LDFLAGS) $(CV_LDFLAGS)
 
 SRCS		:= src/luaocv.cpp src/helper.cpp 		\
-	src/core.cpp src/imgcodecs.cpp src/highgui.cpp src/videoio.cpp
+	src/core.cpp src/imgcodecs.cpp src/highgui.cpp src/videoio.cpp	\
+	src/objdetect.cpp
 OBJS		:= $(patsubst %.cpp, %.o, $(SRCS))
 
 LIB		:= luaocv.so

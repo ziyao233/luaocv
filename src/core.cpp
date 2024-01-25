@@ -20,10 +20,12 @@ locv_core_type_name_to_id(lua_State *l, int idx)
 {
 	const char *names[] = {
 		"8uc1", "8uc3", "8uc4", "64fc1", "64fc3", "64fc4",
+		"32sc1", "32fc1",
 		NULL
 	};
 	int types[] = {
 		CV_8UC1, CV_8UC3, CV_8UC4, CV_64FC1, CV_64FC3, CV_64FC4,
+		CV_32SC1, CV_32FC1,
 	};
 	int id = luaL_checkoption(l, idx, NULL, names);
 	return types[id];
@@ -34,9 +36,11 @@ locv_core_type_id_to_name(lua_State *l, int id)
 {
 	int ids[] = {
 		CV_8UC3, CV_8UC4, CV_8UC1, CV_64FC4, CV_64FC3, CV_64FC1,
+		CV_32SC1, CV_32FC1,
 	};
 	const char *names[] = {
 		"8uc3", "8uc4", "8uc1", "64fc4", "64fc3", "64fc1",
+		"32sc1", "32fc1",
 	};
 
 	for (int i = 0; i < sizeof(ids) / sizeof(int); i++) {
@@ -108,6 +112,22 @@ locv_core_mat_generic_set(cv::Mat *mat, const cv::Point &p,
 		default:
 			goto error;
 		}
+	case CV_32S:
+		switch (ch) {
+		case 1:
+			mat->at<int>(p) = v[0];
+			return;
+		default:
+			goto error;
+		}
+	case CV_32F:
+		switch (ch) {
+		case 1:
+			mat->at<int>(p) = v[0];
+			return;
+		default:
+			goto error;
+		}
 	case CV_64F:
 		switch (ch) {
 		case 3:
@@ -163,6 +183,20 @@ locv_core_mat_generic_get(cv::Mat *mat, cv::Point &p)
 		default:
 			goto error;
 		}
+	case CV_32S:
+		switch (ch) {
+		case 1:
+			return cv::Scalar(mat->at<int>(p));
+		default:
+			goto error;
+		}
+	case CV_32F:
+		switch (ch) {
+		case 1:
+			return cv::Scalar(mat->at<float>(p));
+		default:
+			goto error;
+		}
 	case CV_64F:
 		switch (ch) {
 		case 1:
@@ -214,7 +248,10 @@ locv_core_mat_format(lua_State *l)
 	cv::Mat *mat = locv_core_mat_in_native(l, 1);
 	int dep = mat->depth();
 	lua_pushinteger(l, mat->channels());
-	lua_pushinteger(l, dep == CV_8U ? 8 : 64);
+	lua_pushinteger(l, dep == CV_8U ?	8  :
+			   dep == CV_32F ?	32 :
+			   dep == CV_32S ?	32 :
+			   			64);
 	locv_core_type_id_to_name(l, mat->type());
 	return 3;
 }

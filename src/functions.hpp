@@ -14,6 +14,7 @@
 #include"imgcodecs.hpp"
 #include"highgui.hpp"
 #include"videoio.hpp"
+#include"objdetect.hpp"
 
 luaL_Reg luaocvFunctions[] = {
 	/*	Core		*/
@@ -35,6 +36,9 @@ luaL_Reg luaocvFunctions[] = {
 
 	/*	videoio		*/
 	{ "VideoCapture", locv_videoio_videocapture_new },
+
+	/*	objdetect	*/
+	{ "FaceDetectorYN", locv_objdetect_face_detector_yn_new },
 
 	{ NULL, NULL },
 };
