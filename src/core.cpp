@@ -322,6 +322,16 @@ locv_core_scalar_unpack(lua_State *l)
 	return 4;
 }
 
+static int
+locv_core_scalar_to_integer(lua_State *l)
+{
+	cv::Scalar s = locv_core_scalar_to_native(l, 1);
+	locv_core_scalar_to_lua(l,
+			cv::Scalar((long int)s.val[0], (long int)s.val[1],
+				   (long int)s.val[2], (long int)s.val[3]));
+	return 1;
+}
+
 int
 locv_core_scalar_new(lua_State *l)
 {
@@ -339,6 +349,7 @@ locv_core_scalar_new(lua_State *l)
 
 static const luaL_Reg locvCoreScalarMethods[] = {
 	{ "unpack", locv_core_scalar_unpack },
+	{ "tointeger", locv_core_scalar_to_integer },
 	{ NULL, NULL },
 };
 
