@@ -15,6 +15,7 @@
 #include"highgui.hpp"
 #include"videoio.hpp"
 #include"objdetect.hpp"
+#include"imgproc.hpp"
 
 luaL_Reg luaocvFunctions[] = {
 	/*	Core		*/
@@ -39,6 +40,10 @@ luaL_Reg luaocvFunctions[] = {
 
 	/*	objdetect	*/
 	{ "FaceDetectorYN", locv_objdetect_face_detector_yn_new },
+
+	/*	imgproc		*/
+	{ "line", locv_imgproc_line },
+	{ "rectangle", locv_imgproc_rectangle },
 
 	{ NULL, NULL },
 };

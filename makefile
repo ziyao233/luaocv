@@ -24,7 +24,7 @@ LDFLAGS		?= $(DYN_FLAGS) $(LUA_LDFLAGS) $(CV_LDFLAGS)
 
 SRCS		:= src/luaocv.cpp src/helper.cpp 		\
 	src/core.cpp src/imgcodecs.cpp src/highgui.cpp src/videoio.cpp	\
-	src/objdetect.cpp
+	src/objdetect.cpp src/imgproc.cpp
 OBJS		:= $(patsubst %.cpp, %.o, $(SRCS))
 
 LIB		:= luaocv.so

@@ -17,6 +17,7 @@ luaopen_luaocv(lua_State *l)
 	locv_highgui_init(l);
 	locv_videoio_init(l);
 	locv_objdetect_init(l);
+	locv_imgproc_init(l);
 	luaL_newlib(l, luaocvFunctions);
 	return 1;
 }
