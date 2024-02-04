@@ -388,6 +388,18 @@ locv_core_point_unpack(lua_State *l)
 	return 2;
 }
 
+static int
+locv_core_point_offset(lua_State *l)
+{
+	int *p = (int *)luaL_checkudata(l, 1, "locv.Point");
+	int *s = (int *)luaL_checkudata(l, 2, "locv.Size");
+	int *np = (int *)lua_newuserdatauv(l, sizeof(int) * 2, 0);
+	luaL_setmetatable(l, "locv.Point");
+	np[0] = p[0] + s[0];
+	np[1] = p[1] + s[1];
+	return 1;
+}
+
 int
 locv_core_point_new(lua_State *l)
 {
@@ -403,6 +415,7 @@ locv_core_point_new(lua_State *l)
 
 static const luaL_Reg locvCorePointMethods[] = {
 	{ "unpack", locv_core_point_unpack },
+	{ "offset", locv_core_point_offset },
 	{ NULL, NULL },
 };
 
@@ -441,6 +454,18 @@ locv_core_size_unpack(lua_State *l)
 	return 2;
 }
 
+static int
+locv_core_size_add(lua_State *l)
+{
+	int *p = (int *)luaL_checkudata(l, 1, "locv.Size");
+	int *s = (int *)luaL_checkudata(l, 2, "locv.Size");
+	int *ns = (int *)lua_newuserdatauv(l, sizeof(int) * 2, 0);
+	luaL_setmetatable(l, "locv.Size");
+	ns[0] = p[0] + s[0];
+	ns[1] = p[1] + s[1];
+	return 1;
+}
+
 int
 locv_core_size_new(lua_State *l)
 {
@@ -453,6 +478,7 @@ locv_core_size_new(lua_State *l)
 
 static const luaL_Reg locvCoreSizeMethods[] = {
 	{ "unpack", locv_core_size_unpack },
+	{ "add", locv_core_size_add },
 	{ NULL, NULL },
 };
 
