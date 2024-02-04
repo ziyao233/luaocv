@@ -540,6 +540,69 @@ locv_core_rect_init(lua_State *l)
 	locv_helper_new_class(l, "locv.Rect", locvCoreRectMethods, NULL);
 }
 
+int
+locv_core_border_type_name_to_id(lua_State *l, int idx)
+{
+	const char *names[] = {
+		"constant", "replicate", "reflect", "wrap",
+		"reflect101", "transparent", "isolated",
+		NULL
+	};
+	int ids[] = {
+		cv::BORDER_CONSTANT, cv::BORDER_REPLICATE,
+		cv::BORDER_REFLECT, cv::BORDER_WRAP,
+		cv::BORDER_REFLECT_101, cv::BORDER_TRANSPARENT,
+		cv::BORDER_ISOLATED,
+	};
+	return ids[luaL_checkoption(l, idx, "constant", names)];
+}
+
+int
+locv_core_copy_make_border(lua_State *l)
+{
+	cv::Mat *dst = locv_core_mat_in_native(l, 1);
+	cv::Mat *src = locv_core_mat_in_native(l, 2);
+	int top		= luaL_checkinteger(l, 3);
+	int bottom	= luaL_checkinteger(l, 4);
+	int left	= luaL_checkinteger(l, 5);
+	int right	= luaL_checkinteger(l, 6);
+	int borderType	= locv_core_border_type_name_to_id(l, 7);
+	cv::Scalar s;
+	if (lua_gettop(l) >= 8)
+		s = locv_core_scalar_to_native(l, 8);
+	cv::copyMakeBorder(*src, *dst, top, bottom, left, right,
+			   borderType, s);
+	lua_settop(l, 1);
+	return 1;
+}
+
+static int
+flip_code(lua_State *l, int idx)
+{
+	int ids[] = { 0, 1, -1 };
+	const char *names[] = { "x", "y", "both", NULL };
+	return ids[luaL_checkoption(l, idx, NULL, names)];
+}
+
+int
+locv_core_flip(lua_State *l)
+{
+	cv::Mat *dst = locv_core_mat_in_native(l, 1);
+	cv::Mat *src = dst;
+	int code;
+	if (lua_gettop(l) >= 3) {
+		src = locv_core_mat_in_native(l, 2);
+		code = flip_code(l, 3);
+	} else {
+		code = flip_code(l, 2);
+	}
+
+	cv::flip(*src, *dst, code);
+
+	lua_settop(l, 1);
+	return 1;
+}
+
 void
 locv_core_init(lua_State *l)
 {

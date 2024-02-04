@@ -35,6 +35,9 @@ int locv_core_point_new(lua_State *l);
 int locv_core_size_new(lua_State *l);
 int locv_core_rect_new(lua_State *l);
 
+int locv_core_copy_make_border(lua_State *l);
+int locv_core_flip(lua_State *l);
+
 void locv_core_init(lua_State *l);
 
 #endif	// __CORE_HPP_INC__
