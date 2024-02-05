@@ -17,8 +17,8 @@ locv_objdetect_face_detector_yn_detect(lua_State *l)
 {
 	cv::Ptr<cv::FaceDetectorYN> *d = (cv::Ptr<cv::FaceDetectorYN> *)
 				luaL_checkudata(l, 1, "locv.FaceDetectorYN");
-	cv::Mat *in = locv_core_mat_in_native(l, 2);
-	cv::Mat *out = locv_core_mat_in_native(l, 3);
+	cv::Mat *out = locv_core_mat_in_native(l, 2);
+	cv::Mat *in = locv_core_mat_in_native(l, 3);
 	(*d)->detect(*in, *out);
 	return 0;
 }
