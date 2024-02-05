@@ -47,6 +47,8 @@ luaL_Reg luaocvFunctions[] = {
 	/*	imgproc		*/
 	{ "line", locv_imgproc_line },
 	{ "rectangle", locv_imgproc_rectangle },
+	{ "getTextSize", locv_imgproc_get_text_size },
+	{ "putText", locv_imgproc_put_text },
 
 	{ NULL, NULL },
 };
