@@ -400,6 +400,14 @@ locv_core_point_offset(lua_State *l)
 	return 1;
 }
 
+static int
+locv_core_point_to_string(lua_State *l)
+{
+	int *p = (int *)luaL_checkudata(l, 1, "locv.Point");
+	lua_pushfstring(l, "(%d, %d)", p[0], p[1]);
+	return 1;
+}
+
 int
 locv_core_point_new(lua_State *l)
 {
@@ -416,6 +424,8 @@ locv_core_point_new(lua_State *l)
 static const luaL_Reg locvCorePointMethods[] = {
 	{ "unpack", locv_core_point_unpack },
 	{ "offset", locv_core_point_offset },
+	{ "__tostring", locv_core_point_to_string },
+	{ "tostring", locv_core_point_to_string },
 	{ NULL, NULL },
 };
 
@@ -466,6 +476,14 @@ locv_core_size_add(lua_State *l)
 	return 1;
 }
 
+static int
+locv_core_size_to_string(lua_State *l)
+{
+	int *p = (int *)luaL_checkudata(l, 1, "locv.Size");
+	lua_pushfstring(l, "(%d, %d)", p[0], p[1]);
+	return 1;
+}
+
 int
 locv_core_size_new(lua_State *l)
 {
@@ -479,6 +497,8 @@ locv_core_size_new(lua_State *l)
 static const luaL_Reg locvCoreSizeMethods[] = {
 	{ "unpack", locv_core_size_unpack },
 	{ "add", locv_core_size_add },
+	{ "tostring", locv_core_size_to_string },
+	{ "__tostring", locv_core_size_to_string },
 	{ NULL, NULL },
 };
 
@@ -554,9 +574,21 @@ locv_core_rect_size(lua_State *l)
 	return 1;
 }
 
+static int
+locv_core_rect_to_string(lua_State *l)
+{
+	Locv_Core_Rect *rect = (Locv_Core_Rect *)
+			luaL_checkudata(l, 1, "locv.Rect");
+	lua_pushfstring(l, "topleft: (%d, %d) size: (%d, %d)",
+			 rect->x, rect->y, rect->width, rect->height);
+	return 1;
+}
+
 static const luaL_Reg locvCoreRectMethods[] = {
 	{ "topLeft", locv_core_rect_top_left },
 	{ "size", locv_core_rect_size },
+	{ "tostring", locv_core_rect_to_string },
+	{ "__tostring", locv_core_rect_to_string },
 	{ NULL, NULL },
 };
 
