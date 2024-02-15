@@ -15,7 +15,7 @@
 	locv_helper_do_panic(__FILE__, __LINE__, __func__, s)
 
 void locv_helper_new_class(lua_State *l, const char *name,
-			   const luaL_Reg *methods, lua_CFunction gc);
+			   const luaL_Reg *methods, lua_CFunction gc = NULL);
 void locv_helper_do_panic(const char *file, size_t line,
 			  const char *func, const char *msg);
 

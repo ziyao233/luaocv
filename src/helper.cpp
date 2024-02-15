@@ -12,13 +12,14 @@
 
 void
 locv_helper_new_class(lua_State *l, const char *name, const luaL_Reg *methods,
-		      lua_CFunction gc)
+		      lua_CFunction gc = NULL)
 {
 	luaL_newmetatable(l, name);
 
-	lua_newtable(l);
-	luaL_setfuncs(l, methods, 0);
+	lua_pushvalue(l, -1);
 	lua_setfield(l, -2, "__index");
+
+	luaL_setfuncs(l, methods, 0);
 
 	if (gc) {
 		lua_pushcfunction(l, gc);
