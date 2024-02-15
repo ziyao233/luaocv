@@ -43,6 +43,7 @@ luaL_Reg luaocvFunctions[] = {
 
 	/*	objdetect	*/
 	{ "FaceDetectorYN", locv_objdetect_face_detector_yn_new },
+	{ "QRCodeEncoder", locv_objdetect_qrcode_encoder_new },
 
 	/*	imgproc		*/
 	{ "line", locv_imgproc_line },
