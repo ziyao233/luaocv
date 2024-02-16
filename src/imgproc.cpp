@@ -103,6 +103,19 @@ locv_imgproc_put_text(lua_State *l)
 	return 1;
 }
 
+int
+locv_imgproc_resize(lua_State *l)
+{
+	cv::Mat *dst	= locv_core_mat_in_native(l, 1);
+	cv::Mat *src	= locv_core_mat_in_native(l, 2);
+	cv::Size size	= locv_core_size_to_native(l, 3);
+
+	cv::resize(*src, *dst, size);
+
+	lua_settop(l, 1);
+	return 1;
+}
+
 void
 locv_imgproc_init(lua_State *l)
 {

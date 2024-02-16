@@ -44,12 +44,14 @@ luaL_Reg luaocvFunctions[] = {
 	/*	objdetect	*/
 	{ "FaceDetectorYN", locv_objdetect_face_detector_yn_new },
 	{ "QRCodeEncoder", locv_objdetect_qrcode_encoder_new },
+	{ "QRCodeDetector", locv_objdetect_qrcode_detector_new },
 
 	/*	imgproc		*/
 	{ "line", locv_imgproc_line },
 	{ "rectangle", locv_imgproc_rectangle },
 	{ "getTextSize", locv_imgproc_get_text_size },
 	{ "putText", locv_imgproc_put_text },
+	{ "resize", locv_imgproc_resize },
 
 	{ NULL, NULL },
 };

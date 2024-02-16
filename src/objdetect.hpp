@@ -12,6 +12,7 @@
 
 int locv_objdetect_face_detector_yn_new(lua_State *l);
 int locv_objdetect_qrcode_encoder_new(lua_State *l);
+int locv_objdetect_qrcode_detector_new(lua_State *l);
 
 void locv_objdetect_init(lua_State *l);
 

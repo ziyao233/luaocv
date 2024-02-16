@@ -14,6 +14,7 @@ int locv_imgproc_line(lua_State *l);
 int locv_imgproc_rectangle(lua_State *l);
 int locv_imgproc_get_text_size(lua_State *l);
 int locv_imgproc_put_text(lua_State *l);
+int locv_imgproc_resize(lua_State *l);
 
 void locv_imgproc_init(lua_State *l);
 

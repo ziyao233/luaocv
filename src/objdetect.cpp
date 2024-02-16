@@ -4,7 +4,6 @@
  *	This file is distributed under MIT License.
  *	Copyright (c) 2024 Yao Zi. All rights reserved.
  */
-
 #include<lua.hpp>
 #include<opencv2/objdetect.hpp>
 
@@ -162,10 +161,76 @@ locv_objdetect_qrcode_encoder_init(lua_State *l)
 	return;
 }
 
+static int
+qrcode_detector_detect_and_decode(lua_State *l)
+{
+	cv::QRCodeDetector **d = (cv::QRCodeDetector **)
+			luaL_checkudata(l, 1, "locv.QRCodeDetector");
+	cv::Mat *in = locv_core_mat_in_native(l, 2);
+	cv::_OutputArray points = cv::noArray();
+	cv::_OutputArray code = cv::noArray();
+
+	switch (lua_gettop(l)) {
+		default:
+		case 4:
+			code = *locv_core_mat_in_native(l, 4);
+		// fallthrough
+		case 3:
+			points = *locv_core_mat_in_native(l, 3);
+		// fallthrough
+		case 2:
+		case 1:
+			break;
+	}
+
+	std::string s = (*d)->detectAndDecode(*in, points, code);
+
+	if (!s.length())
+		lua_pushboolean(l, false);
+	else
+		lua_pushlstring(l, s.c_str(), s.length());
+
+	return 1;
+}
+
+static int
+qrcode_detector_gc(lua_State *l)
+{
+	cv::QRCodeDetector **d = (cv::QRCodeDetector **)
+			luaL_checkudata(l, 1, "locv.QRCodeDetector");
+	delete *d;
+	return 0;
+}
+
+static const luaL_Reg locvObjdetectQRCodeDetectorMethods[] = {
+	{ "__gc", qrcode_detector_gc },
+	{ "detectAndDecode", qrcode_detector_detect_and_decode },
+	{ NULL, NULL },
+};
+
+int
+locv_objdetect_qrcode_detector_new(lua_State *l)
+{
+	cv::QRCodeDetector **d = (cv::QRCodeDetector **)
+			lua_newuserdatauv(l, sizeof(cv::QRCodeDetector *), 0);
+	*d = new cv::QRCodeDetector();
+	luaL_setmetatable(l, "locv.QRCodeDetector");
+	return 1;
+}
+
+static void
+locv_objdetect_qrcode_detector_init(lua_State *l)
+{
+	locv_helper_new_class(l, "locv.QRCodeDetector",
+			      locvObjdetectQRCodeDetectorMethods);
+	return;
+}
+
 void
 locv_objdetect_init(lua_State *l)
 {
 	locv_objdetect_face_detector_yn_init(l);
 	locv_objdetect_qrcode_encoder_init(l);
+	locv_objdetect_qrcode_detector_init(l);
 	return;
 }
