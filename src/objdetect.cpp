@@ -107,9 +107,6 @@ qrcode_encoder_get_param(lua_State *l, int idx)
 
 	cv::QRCodeEncoder::Params params;
 
-	if (lua_isnil(l, idx));
-		return params;
-
 	luaL_checktype(l, idx, LUA_TTABLE);
 
 	lua_getfield(l, idx, "correctionLevel");
@@ -135,7 +132,7 @@ qrcode_encoder_get_param(lua_State *l, int idx)
 			(cv::QRCodeEncoder::CorrectionLevel)(level - 1);
 	}
 
-	lua_pop(l, 4);
+	lua_pop(l, 3);
 
 	return params;
 }
@@ -148,7 +145,9 @@ locv_objdetect_qrcode_encoder_new(lua_State *l)
 					  sizeof(cv::Ptr<cv::QRCodeEncoder>),
 					  0);
 	new(e) cv::Ptr<cv::QRCodeEncoder>;
-	*e = cv::QRCodeEncoder::create(qrcode_encoder_get_param(l, 1));
+	*e = cv::QRCodeEncoder::create(lua_gettop(l) == 1 ?
+					cv::QRCodeEncoder::Params() :
+					qrcode_encoder_get_param(l, 1));
 	luaL_setmetatable(l, "locv.QRCodeEncoder");
 	return 1;
 }
