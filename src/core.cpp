@@ -5,7 +5,6 @@
  *	Copyright (c) 2024 Yao Zi. All rights reserved.
  */
 
-#include<cassert>
 #include<cstring>
 #include<iostream>
 
@@ -75,7 +74,7 @@ static int
 locv_core_mat_gc(lua_State *l)
 {
 	cv::Mat *mat = locv_core_mat_in_native(l, -1);
-	assert(mat);
+	locv_assert(mat);
 	delete mat;
 	return 0;
 }
@@ -284,14 +283,14 @@ static luaL_Reg locvCoreMatMethods[] = {
 	{ "get", locv_core_mat_get },
 	{ "size", locv_core_mat_size },
 	{ "format", locv_core_mat_format },
+	{ "__gc", locv_core_mat_gc },
 	{ NULL, NULL },
 };
 
 static void
 locv_core_mat_init(lua_State *l)
 {
-	locv_helper_new_class(l, "locv.Mat", locvCoreMatMethods,
-			      locv_core_mat_gc);
+	locv_helper_new_class(l, "locv.Mat", locvCoreMatMethods);
 	return;
 }
 

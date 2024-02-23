@@ -22,11 +22,6 @@ locv_objdetect_face_detector_yn_detect(lua_State *l)
 	return 0;
 }
 
-static const luaL_Reg locvObjdetectFaceDetectorYNMethods[] = {
-	{ "detect", locv_objdetect_face_detector_yn_detect },
-	{ NULL, NULL },
-};
-
 int
 locv_objdetect_face_detector_yn_new(lua_State *l)
 {
@@ -51,12 +46,17 @@ locv_objdetect_face_detector_yn_gc(lua_State *l)
 	return 0;
 }
 
+static const luaL_Reg locvObjdetectFaceDetectorYNMethods[] = {
+	{ "detect", locv_objdetect_face_detector_yn_detect },
+	{ "__gc", locv_objdetect_face_detector_yn_gc },
+	{ NULL, NULL },
+};
+
 static void
 locv_objdetect_face_detector_yn_init(lua_State *l)
 {
 	locv_helper_new_class(l, "locv.FaceDetectorYN",
-			      locvObjdetectFaceDetectorYNMethods,
-			      locv_objdetect_face_detector_yn_gc);
+			      locvObjdetectFaceDetectorYNMethods);
 	return;
 }
 
