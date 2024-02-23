@@ -1,6 +1,5 @@
 ifeq ($(RELEASE),1)
-then
-	CXXFLAGS_DEBUG	= -O2
+	CXXFLAGS_DEBUG	= -O2 -DLOCV_RELEASE
 else
 	CXXFLAGS_DEBUG	= -g
 endif

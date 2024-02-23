@@ -38,3 +38,13 @@ locv_helper_do_panic(const char *file, size_t line,
 	std::abort();
 	return;
 }
+
+void
+locv_debug(const char *fmt, ...)
+{
+	va_list va;
+	va_start(va, fmt);
+	vfprintf(stderr, fmt, va);
+	va_end(va);
+	return;
+}
