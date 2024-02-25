@@ -143,6 +143,22 @@ error:
 	locv_helper_panic("unsupported format");
 }
 
+static inline void
+check_bound(lua_State *l, const cv::Mat *m, const cv::Point &p)
+{
+	locv_lassert(l, p.x < m->cols && p.y < m->rows, "out of bound access");
+	return;
+}
+
+static inline void
+check_rect_bound(lua_State *l, const cv::Mat *m, const cv::Rect &r)
+{
+	locv_lassert(l, r.x < m->cols && r.y < m->rows &&
+		        r.x + r.width < m->cols && r.y + r.height < m->rows,
+		     "out of bound access");
+	return;
+}
+
 static int
 locv_core_mat_set(lua_State *l)
 {
@@ -152,10 +168,12 @@ locv_core_mat_set(lua_State *l)
 	if (luaL_testudata(l, 2, "locv.Point")) {
 		cv::Point p = locv_core_point_to_native(l, 2);
 		cv::Scalar s = locv_core_scalar_to_native(l, 3);
+		check_bound(l, mat, p);
 		locv_core_mat_generic_set(mat, p, s);
 	} else if (luaL_testudata(l, 2, "locv.Rect")) {
 		cv::Rect r = locv_core_rect_to_native(l, 2);
 		cv::Scalar s = locv_core_scalar_to_native(l, 3);
+		check_rect_bound(l, mat, r);
 		mat->operator () (r) = s;
 	} else {
 		luaL_typeerror(l, 2, "locv.Point or locv.Rect");
@@ -222,9 +240,11 @@ locv_core_mat_get(lua_State *l)
 	if (luaL_testudata(l, 2, "locv.Point")) {
 		cv::Point p = locv_core_point_to_native(l, 2);
 		cv::Scalar s = locv_core_mat_generic_get(mat, p);
+		check_bound(l, mat, p);
 		locv_core_scalar_to_lua(l, s);
 	} else if (luaL_testudata(l, 2, "locv.Rect")) {
 		cv::Rect r = locv_core_rect_to_native(l, 2);
+		check_rect_bound(l, mat, r);
 		cv::Mat *part = new cv::Mat(*mat, r);
 		locv_core_mat_in_lua(l, part);
 	} else {

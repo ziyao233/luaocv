@@ -25,7 +25,18 @@ void locv_helper_do_panic(const char *file, size_t line,
 #ifndef LOCV_RELEASE
 
 void locv_debug(const char *fmt, ...);
+
 #define locv_assert assert
+
+#define locv_fail(l, msg) \
+	luaL_error(l, "%s@%s at line %I fails:\n" msg, __func__,	\
+		   __FILE__, (lua_Integer)(__LINE__));
+
+#define locv_lassert(l, expr, msg) do {					\
+	if (!(expr)) {							\
+		locv_fail(l, "assertion " #expr " failed:\n" msg);	\
+	}								\
+} while (0)
 
 #else
 
@@ -37,6 +48,8 @@ locv_debug(const char *fmt, ...)
 }
 
 #define locv_assert
+#define locv_fail
+#define locv_lassert
 
 #endif
 
