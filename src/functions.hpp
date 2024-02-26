@@ -27,6 +27,7 @@ luaL_Reg luaocvFunctions[] = {
 
 	{ "copyMakeBorder", locv_core_copy_make_border },
 	{ "flip", locv_core_flip },
+	{ "merge", locv_core_mat_merge },
 
 	/*	imgcodecs	*/
 	{ "imread", locv_imgcodecs_imread },

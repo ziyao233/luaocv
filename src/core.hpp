@@ -37,6 +37,7 @@ int locv_core_rect_new(lua_State *l);
 
 int locv_core_copy_make_border(lua_State *l);
 int locv_core_flip(lua_State *l);
+int locv_core_mat_merge(lua_State *l);
 
 void locv_core_init(lua_State *l);
 

@@ -262,6 +262,47 @@ locv_core_mat_size(lua_State *l)
 }
 
 static int
+locv_core_mat_split(lua_State *l)
+{
+	cv::Mat *src = locv_core_mat_in_native(l, 1);
+	int n = lua_gettop(l) - 1;
+	locv_lassert(l, src->channels() == n,
+		     "Outputs mismatch channels in the source");
+	locv_assert(n <= 4);
+	cv::Mat dst[4];
+	cv::Mat **dstp[4];
+	for (int i = 1; i <= n; i++) {
+		cv::Mat **p = (cv::Mat **)luaL_checkudata(l, i + 1, "locv.Mat");
+		dstp[i - 1] = p;
+		delete *p;
+	}
+
+	cv::split(*src, dst);
+
+	for (int i = 0; i < n; i++)
+		*dstp[i] = new cv::Mat(dst[i]);
+
+	return n;
+}
+
+int
+locv_core_mat_merge(lua_State *l)
+{
+	cv::Mat *dst = locv_core_mat_in_native(l, 1);
+	int n = lua_gettop(l) - 1;
+	locv_lassert(l, n <= 4, "Too many channels");
+
+	cv::Mat srcs[4];
+	for (int i = 1; i <= n; i++)
+		srcs[i - 1] = *locv_core_mat_in_native(l, i + 1);
+
+	cv::merge(srcs, n, *dst);
+
+	lua_settop(l, 1);
+	return 1;
+}
+
+static int
 locv_core_mat_format(lua_State *l)
 {
 	cv::Mat *mat = locv_core_mat_in_native(l, 1);
@@ -303,6 +344,8 @@ static luaL_Reg locvCoreMatMethods[] = {
 	{ "get", locv_core_mat_get },
 	{ "size", locv_core_mat_size },
 	{ "format", locv_core_mat_format },
+	{ "split", locv_core_mat_split },
+	{ "merge", locv_core_mat_merge },
 	{ "__gc", locv_core_mat_gc },
 	{ NULL, NULL },
 };
