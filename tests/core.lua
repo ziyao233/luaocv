@@ -87,6 +87,53 @@ matConstructorFail3()
 	locv.Mat("a");
 end
 
+local function
+matGet()
+	local m = locv.Mat(4, 4, "8uc3");
+	m:get(locv.Point(3, 3));
+	m:get(locv.Rect(locv.Point(1, 1), locv.Size(2, 2)));
+end
+
+local function
+matGetOutOfBoundFail1()
+	locv.Mat(4, 4, "8uc3"):get(locv.Point(3, 4));
+end
+
+local function
+matGetOutOfBoundFail2()
+	locv.Mat(4, 4, "8uc3"):get(locv.Point(4, 3));
+end
+
+local function
+matGetOutOfBoundFail3()
+	locv.Mat(4, 4, "8uc3"):get(
+		locv.Rect(locv.Point(2, 2), locv.Size(4, 3)));
+end
+
+local function
+matSet()
+	local m = locv.Mat(4, 4, "8uc3");
+	m:set(locv.Point(3, 3), locv.Scalar());
+	m:set(locv.Rect(locv.Point(1, 1), locv.Size(2, 2)), locv.Scalar());
+end
+
+local function
+matSetOutOfBoundFail1()
+	locv.Mat(4, 4, "8uc3"):set(locv.Point(3, 4), locv.Scalar());
+end
+
+local function
+matSetOutOfBoundFail2()
+	locv.Mat(4, 4, "8uc3"):set(locv.Point(4, 3), locv.Scalar());
+end
+
+local function
+matSetOutOfBoundFail3()
+	locv.Mat(4, 4, "8uc3"):set(
+		locv.Rect(locv.Point(2, 2), locv.Size(4, 3)),
+		locv.Scalar());
+end
+
 runtests.run(
 {
 	{ "Size.constructor", sizeConstructor },
@@ -95,6 +142,8 @@ runtests.run(
 	{ "Size.toString", sizeToString },
 	{ "Rect.constructor", rectConstructor },
 	{ "Mat.constructor", matConstructor },
+	{ "Mat.get", matGet },
+	{ "Mat.set", matSet },
 },
 {
 	{ "Size.constructorFewerArgFail", sizeConstructorFewerArgFail },
@@ -104,4 +153,10 @@ runtests.run(
 	{ "Mat.constructorFail1", matConstructorFail1 },
 	{ "Mat.constructorFail2", matConstructorFail2 },
 	{ "Mat.constructorFail3", matConstructorFail3 },
+	{ "Mat.getOutOfBoundFail1", matGetOutOfBoundFail1 },
+	{ "Mat.getOutOfBoundFail2", matGetOutOfBoundFail2 },
+	{ "Mat.getOutOfBoundFail3", matGetOutOfBoundFail3 },
+	{ "Mat.setOutOfBoundFail1", matSetOutOfBoundFail1 },
+	{ "Mat.setOutOfBoundFail2", matSetOutOfBoundFail2 },
+	{ "Mat.setOutOfBoundFail3", matSetOutOfBoundFail3 },
 });
